@@ -41,8 +41,17 @@
 <body>
 <div class="login-container">
     <h2>Iniciar Sesión</h2>
-    <form action="#" method="post">
-        <label>Usuario:</label>
+    <div th:if="${param.error}" style="color: red; margin-bottom:15px;">
+        Usuario o contraseña incorrectos. Inténtalo de nuevo.
+    </div>
+    <div th:if="${param.logout}" style="color: green; margin-bottom:15px;">
+        Has cerrado sesión exitosamente.
+    </div>
+    <div th:if="${param.registered}" style="color: green; margin-bottom:15px;">
+        Te registraste exitosamente.
+    </div>
+    <form action="/auth/process-login" method="post">
+        <label>Email:</label>
         <input type="text" name="username" required>
         <label>Contraseña:</label>
         <input type="password" name="password" required>

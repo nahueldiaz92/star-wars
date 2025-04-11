@@ -4,6 +4,7 @@ import com.conexa.starwars.dto.people.PeopleDetailResponse;
 import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.people.People;
 import com.conexa.starwars.dto.people.PeopleDetail;
+import com.conexa.starwars.dto.people.PeopleSearchResponse;
 import com.conexa.starwars.exceptions.ApiException;
 import com.conexa.starwars.exceptions.PageNotFoundException;
 import com.conexa.starwars.service.PeopleService;
@@ -28,9 +29,8 @@ public class PeopleServiceImpl implements PeopleService {
     private final RestTemplate restTemplate;
 
     @Override
-    @Cacheable(value = LIST_PEOPLE_CACHE, key = "#page + '-' + #id")
+    @Cacheable(value = LIST_PEOPLE_CACHE, key = "#page")
     public ApiListResponse<People> getAllPeople(Integer page) {
-
 
         if (page < 1) {
             throw new IllegalArgumentException("La pagina debe ser mayor a 0");
@@ -39,7 +39,6 @@ public class PeopleServiceImpl implements PeopleService {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(API_BASE_URL + "/people/")
                     .queryParam("page", page)
                     .queryParam("limit", DEFAULT_PAGE_SIZE);
-
 
         String url = uriBuilder.toUriString();
 
@@ -53,8 +52,6 @@ public class PeopleServiceImpl implements PeopleService {
             );
 
             ApiListResponse<People> body = response.getBody();
-
-            System.out.println(body);
 
 
             if (body == null || !"ok".equals(body.getMessage())) {
@@ -93,5 +90,23 @@ public class PeopleServiceImpl implements PeopleService {
         } catch (HttpClientErrorException ex) {
             throw new ApiException("La request a la API fallo con codigo: " + ex.getStatusCode());
         }
+    }
+
+    @Override
+    public PeopleSearchResponse searchPeopleByName(String name) {
+
+        String url = API_BASE_URL + "/people/?name=" + name;
+
+        ResponseEntity<PeopleSearchResponse> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<PeopleSearchResponse>() {}
+        );
+        System.out.println("====================");
+        System.out.println(response.getBody());
+        System.out.println("====================");
+
+        return response.getBody();
     }
 }

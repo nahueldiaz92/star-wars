@@ -3,6 +3,8 @@ package com.conexa.starwars.controller;
 import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.people.People;
 import com.conexa.starwars.dto.people.PeopleDetail;
+import com.conexa.starwars.dto.people.PeopleDetailResponse;
+import com.conexa.starwars.dto.people.PeopleSearchResponse;
 import com.conexa.starwars.service.PeopleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,16 @@ public class PeopleController {
         PeopleDetail person = peopleService.getPeopleById(id);
         model.addAttribute("person", person);
         return "people/detail";
+    }
+
+    @GetMapping("/search")
+    public String searchPeopleView(Model model, @RequestParam(required = false) String name) {
+        if (name != null && !name.isEmpty()) {
+            PeopleSearchResponse response = peopleService.searchPeopleByName(name);
+            model.addAttribute("results", response.getResult());
+            model.addAttribute("searchPerformed", true);
+        }
+        return "people/search";
     }
 
     // Endpoint API JSON

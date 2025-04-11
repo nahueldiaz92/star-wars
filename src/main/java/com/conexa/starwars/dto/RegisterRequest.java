@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RegisterRequestDTO {
+public class RegisterRequest {
 
     @NotBlank
     private String email;

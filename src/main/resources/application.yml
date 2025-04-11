@@ -7,12 +7,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
+  cache:
+    type: caffeine
+    cache-names: peopleList, peopleDetail, peopleSearch
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=30m
 
-logging:
-  level:
-    org.springframework.jdbc.datasource: WARN
-    org.hibernate.SQL: WARN
+  logging:
+    level:
+      org.springframework.cache: DEBUG
+      com.github.benmanes.caffeine: DEBUG
+
+

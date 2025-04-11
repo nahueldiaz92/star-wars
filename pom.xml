@@ -39,6 +39,19 @@
       <version>${spring.boot.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>${spring.boot.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
+
     <!-- Spring Security -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -54,13 +67,13 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Pruebas -->
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <version>${spring.boot.version}</version>
-      <scope>test</scope>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>2.9.3</version>
     </dependency>
+
+    <!-- Pruebas -->
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -84,6 +97,11 @@
       <version>8.5.13</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.17.2</version>
+    </dependency>
   </dependencies>
 
   <build>

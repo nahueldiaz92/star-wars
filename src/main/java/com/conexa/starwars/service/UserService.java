@@ -1,6 +1,6 @@
 package com.conexa.starwars.service;
 
-import com.conexa.starwars.dto.RegisterRequestDTO;
+import com.conexa.starwars.dto.RegisterRequest;
 import com.conexa.starwars.exceptions.UserRegistrationException;
 import com.conexa.starwars.model.User;
 import com.conexa.starwars.repository.RoleRepository;
@@ -17,7 +17,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void registerUser(RegisterRequestDTO request) {
+    public void registerUser(RegisterRequest request) {
 
             if (userRepository.existsByEmail(request.getEmail())) {
                 throw new UserRegistrationException("El email ya esta en uso");

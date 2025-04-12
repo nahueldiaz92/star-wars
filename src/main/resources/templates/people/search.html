@@ -37,9 +37,15 @@
 
   <!-- Resultados de búsqueda -->
   <div th:if="${searchPerformed}">
-    <div th:if="${results != null && !results.empty}">
-      <h3 class="mb-3">Resultados para: <span class="text-primary" th:text="${param.name}"></span></h3>
+    <div th:if="${results != null && results.size > 0}">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Resultados para: <span class="text-primary" th:text="${param.name}"></span></h3>
+        <div class="text-muted">
+          Página <span th:text="${currentPage}"></span> de <span th:text="${totalPages}"></span>
+        </div>
+      </div>
 
+      <!-- Listado de personajes (máximo 3 por página) -->
       <div class="row">
         <div class="col-md-4 mb-4" th:each="result : ${results}">
           <div class="card character-card h-100">
@@ -57,9 +63,40 @@
           </div>
         </div>
       </div>
+
+      <!-- Controles de paginación -->
+      <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <!-- Botón Anterior -->
+          <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/people/search(name=${param.name}, page=${currentPage - 1})}"
+               aria-label="Previous">
+              <span aria-hidden="true">&laquo; Anterior</span>
+            </a>
+          </li>
+
+          <!-- Números de página (opcional) -->
+          <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+              class="page-item" th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link"
+               th:href="@{/people/search(name=${param.name}, page=${i})}"
+               th:text="${i}"></a>
+          </li>
+
+          <!-- Botón Siguiente -->
+          <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/people/search(name=${param.name}, page=${currentPage + 1})}"
+               aria-label="Next">
+              <span aria-hidden="true">Siguiente &raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
-    <div th:if="${results == null || results.empty}" class="alert alert-warning">
+    <div th:if="${results == null || results.size() == 0}" class="alert alert-warning">
       <i class="bi bi-exclamation-triangle"></i> No se encontraron personajes con ese nombre.
     </div>
   </div>

@@ -17,9 +17,15 @@ spring:
     caffeine:
       spec: maximumSize=500,expireAfterWrite=30m
 
-  logging:
-    level:
-      org.springframework.cache: DEBUG
-      com.github.benmanes.caffeine: DEBUG
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  version: 1.0.0
+  title: Star Wars API Documentation
+  description: API para consultar informacion de personajes de Star Wars
+
 
 

@@ -15,6 +15,9 @@ public class RestTemplateConfig {
         return builder
                 .setConnectTimeout(Duration.ofSeconds(5))
                 .setReadTimeout(Duration.ofSeconds(5))
+                .defaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+                .defaultHeader("Accept", "application/json")
+                .defaultHeader("Accept-Language", "en-US,en;q=0.9")
                 .build();
     }
 }

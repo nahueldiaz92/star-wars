@@ -1,4 +1,4 @@
-package com.conexa.starwars.exceptions;
+package com.conexa.starwars.exception;
 
 public class UserRegistrationException extends RuntimeException {
     public UserRegistrationException(String message) {

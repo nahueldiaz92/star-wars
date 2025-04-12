@@ -1,4 +1,4 @@
-package com.conexa.starwars.dto;
+package com.conexa.starwars.dto.register;
 
 import lombok.*;
 

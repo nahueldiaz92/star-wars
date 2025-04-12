@@ -1,7 +1,7 @@
 package com.conexa.starwars.service;
 
-import com.conexa.starwars.dto.RegisterRequest;
-import com.conexa.starwars.exceptions.UserRegistrationException;
+import com.conexa.starwars.dto.register.RegisterRequest;
+import com.conexa.starwars.exception.UserRegistrationException;
 import com.conexa.starwars.model.User;
 import com.conexa.starwars.repository.RoleRepository;
 import com.conexa.starwars.repository.UserRepository;

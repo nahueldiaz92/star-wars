@@ -22,9 +22,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.ignoringAntMatchers("/auth/**", "/register")) // Deshabilitar CSRF solo para autenticación si es necesario
+                .csrf(csrf -> csrf.ignoringAntMatchers("/auth/**", "/register"))
                 .authorizeHttpRequests(auth -> auth
-                        .mvcMatchers("/auth/**").permitAll()
+                        .mvcMatchers("/auth/**","/swagger-ui/**", "/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -1,8 +1,7 @@
 package com.conexa.starwars.controller;
 
-import com.conexa.starwars.config.security.UserDetailsServiceImpl;
-import com.conexa.starwars.dto.RegisterRequest;
-import com.conexa.starwars.exceptions.UserRegistrationException;
+import com.conexa.starwars.dto.register.RegisterRequest;
+import com.conexa.starwars.exception.UserRegistrationException;
 import com.conexa.starwars.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

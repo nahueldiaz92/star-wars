@@ -1,7 +1,7 @@
-package com.conexa.starwars.exceptions;
+package com.conexa.starwars.exception;
 
 public class PageNotFoundException extends RuntimeException {
     public PageNotFoundException(int page) {
-        super("Page " + page + " not found" );
+        super("Pagina " + page + " no encontrada");
     }
 }

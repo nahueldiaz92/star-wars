@@ -1,4 +1,4 @@
-package com.conexa.starwars.dto;
+package com.conexa.starwars.dto.auth;
 
 import lombok.*;
 
@@ -10,13 +10,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RegisterRequestDTO {
+public class RegisterRequest {
 
     @NotBlank
     private String email;
-
-    @NotBlank
-    private String username;
 
     @NotBlank
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")

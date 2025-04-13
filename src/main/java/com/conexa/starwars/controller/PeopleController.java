@@ -1,6 +1,8 @@
 package com.conexa.starwars.controller;
 
-import com.conexa.starwars.annotations.DocumentedApiListResponse;
+import com.conexa.starwars.annotations.DocumentedListResponse;
+import com.conexa.starwars.annotations.DocumentedDetailResponse;
+import com.conexa.starwars.annotations.DocumentedPaginatedResultResponse;
 import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.PaginatedResult;
 import com.conexa.starwars.dto.people.*;
@@ -21,28 +23,30 @@ import org.springframework.web.bind.annotation.*;
 public class PeopleController {
     private final PeopleService peopleService;
 
-    @Operation(summary = "Obtener personajes paginados")
-    @DocumentedApiListResponse
+    @Operation(summary = "Obtener todos los personajes paginados")
+    @DocumentedListResponse
     @GetMapping("/api")
     @ResponseBody
-    public ResponseEntity<ApiListResponse<People>> getAllPeopleApi(
+    public ResponseEntity<ApiListResponse<People>> getAllPeople(
             @Parameter(description = "Numero de pagina", example = "1")
             @RequestParam(defaultValue = "1") int page) {
         return ResponseEntity.ok(peopleService.getAllPeople(page));
     }
 
     @Operation(summary = "Obtener detalles de un personaje por ID")
+    @DocumentedDetailResponse
     @GetMapping("/api/{id}")
     @ResponseBody
-    public ResponseEntity<PeopleDetail> getPeopleByIdApi(
+    public ResponseEntity<PeopleDetail> getPeopleById(
             @Parameter(description = "ID del personaje", example = "1")
             @PathVariable String id) {
         return ResponseEntity.ok(peopleService.getPeopleById(id));
     }
     @Operation(summary = "Obtener detalles de personajes filtrando por nombre")
+    @DocumentedPaginatedResultResponse
     @GetMapping("/api/search")
     @ResponseBody
-    public ResponseEntity<PaginatedResult<PeopleResult>> searchPeopleByNameApi(
+    public ResponseEntity<PaginatedResult<PeopleResult>> searchPeopleByName(
             @Parameter(description = "Nombre para filtrar", example = "Luke")
             @RequestParam(required = false) String name,
             @Parameter(description = "Numero de pagina", example = "1")

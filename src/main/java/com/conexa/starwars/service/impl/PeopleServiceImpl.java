@@ -4,7 +4,9 @@ import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.PaginatedResult;
 import com.conexa.starwars.dto.people.*;
 import com.conexa.starwars.exception.ApiException;
+import com.conexa.starwars.external.people.PeopleApiClient;
 import com.conexa.starwars.service.PeopleService;
+import com.conexa.starwars.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,6 +18,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,28 +26,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PeopleServiceImpl implements PeopleService {
 
-    private static final String API_BASE_URL = "https://www.swapi.tech/api";
-
-    private static final int DEFAULT_PAGE_SIZE = 10;
-    private static final int DEFAULT_SEARCH_PAGE_SIZE = 3;
-
-    private static final String PEOPLE_CACHE = "peopleDetail";
-    private static final String LIST_PEOPLE_CACHE = "peopleList";
-    private static final String SEARCH_PEOPLE_CACHE = "peopleSearch";
-
     private final RestTemplate restTemplate;
+    private final PeopleApiClient peopleApiClient;
 
     @Override
-    @Cacheable(value = LIST_PEOPLE_CACHE, key = "#page")
+    @Cacheable(value = Constants.LIST_PEOPLE_CACHE, key = "#page")
     public ApiListResponse<People> getAllPeople(Integer page) {
 
         if (page < 1) {
             throw new ApiException("La pagina debe ser mayor a 0", HttpStatus.BAD_REQUEST);
         }
 
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(API_BASE_URL + "/people/")
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(Constants.API_BASE_URL + "/people/")
                 .queryParam("page", page)
-                .queryParam("limit", DEFAULT_PAGE_SIZE);
+                .queryParam("limit", Constants.DEFAULT_PAGE_SIZE);
 
         String url = uriBuilder.toUriString();
 
@@ -65,21 +60,21 @@ public class PeopleServiceImpl implements PeopleService {
 
             if (response.getBody() == null ||
                     response.getBody().getResults() == null) {
-                throw new ApiException("Respuesta no valida desde la API", HttpStatus.BAD_GATEWAY);
+                throw new ApiException("Respuesta no valida desde la API", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             return body;
         } catch (HttpClientErrorException.NotFound ex) {
-            throw new ApiException("La request a la API fallo: " + ex.getMessage(), HttpStatus.BAD_GATEWAY);
+            throw new ApiException("La request a la API fallo: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @Override
-    @Cacheable(value = PEOPLE_CACHE, key = "#id")
+    @Cacheable(value = Constants.PEOPLE_CACHE, key = "#id")
     public PeopleDetail getPeopleById(String id) {
 
-        String url = API_BASE_URL + "/people/" + id;
+        String url = Constants.API_BASE_URL + "/people/" + id;
         try {
 
             ResponseEntity<PeopleDetailResponse> response = restTemplate.exchange(
@@ -100,55 +95,45 @@ public class PeopleServiceImpl implements PeopleService {
             if (body == null ||
                     body.getResult() == null ||
                     body.getResult().getProperties() == null) {
-                throw new ApiException("Respuesta no valida desde la API", HttpStatus.BAD_GATEWAY);
+                throw new ApiException("Respuesta no valida desde la API", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             return response.getBody().getResult().getProperties();
         } catch (HttpClientErrorException ex) {
-            throw new ApiException("La request a la API fallo: " + ex.getMessage(), HttpStatus.BAD_GATEWAY);
+            throw new ApiException("La request a la API fallo: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @Override
-    @Cacheable(value = SEARCH_PEOPLE_CACHE, key = "#name")
     public PaginatedResult<PeopleResult> searchPeopleByName(String name, Integer page) {
-
         int adjustedPage = page - 1;
-        if (adjustedPage < 0) adjustedPage = 0;
-
-        String url = API_BASE_URL + "/people/?name=" + name;
-        try {
-            ResponseEntity<PeopleSearchResponse> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<PeopleSearchResponse>() {
-                    }
-            );
-
-            PeopleSearchResponse body = response.getBody();
-
-            if (body != null && body.getResult() != null) {
-                List<PeopleResult> allResults = body.getResult();
-
-                List<PeopleResult> paginatedResults = allResults.stream()
-                        .skip((long) adjustedPage * DEFAULT_SEARCH_PAGE_SIZE)
-                        .limit(DEFAULT_SEARCH_PAGE_SIZE)
-                        .collect(Collectors.toList());
-
-                return new PaginatedResult<>(
-                        paginatedResults,
-                        page,
-                        DEFAULT_SEARCH_PAGE_SIZE,
-                        allResults.size()
-                );
-            } else {
-                throw new ApiException("Error en la API de Star Wars: " +
-                        (body != null ? body.getMessage() : "respuesta nula"), HttpStatus.BAD_GATEWAY);
-            }
-        } catch (HttpClientErrorException ex) {
-            throw new ApiException("La request a la API fallo: " + ex.getMessage(), HttpStatus.BAD_GATEWAY);
+        if (adjustedPage < 0) {
+            throw new ApiException("La pagina debe ser mayor a 0", HttpStatus.BAD_REQUEST);
         }
 
+        try {
+            List<PeopleResult> allResults = peopleApiClient.fetchAllPeopleByName(name);
+
+            List<PeopleResult> paginatedResults = allResults.stream()
+                    .skip((long) adjustedPage * Constants.DEFAULT_SEARCH_PAGE_SIZE)
+                    .limit(Constants.DEFAULT_SEARCH_PAGE_SIZE)
+                    .collect(Collectors.toList());
+
+            if (page > Math.ceil(allResults.size()) / Constants.DEFAULT_SEARCH_PAGE_SIZE) {
+                throw new ApiException("Pagina no encontrada", HttpStatus.NOT_FOUND);
+            }
+
+            return new PaginatedResult<>(
+                    paginatedResults,
+                    page,
+                    Constants.DEFAULT_SEARCH_PAGE_SIZE,
+                    allResults.size()
+            );
+        } catch (HttpClientErrorException ex) {
+            throw new ApiException("La request a la API falló: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+
 }

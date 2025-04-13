@@ -15,17 +15,12 @@ import java.lang.annotation.*;
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Recursos encontrados",
+                description = "Recurso encontrado",
                 content = @Content(schema = @Schema(implementation = ApiListResponse.class))
         ),
         @ApiResponse(
-                responseCode = "400",
-                description = "Parametros incorrectos",
-                content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-        @ApiResponse(
                 responseCode = "404",
-                description = "Pagina no encontrada",
+                description = "ID no encontrado",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         ),
         @ApiResponse(
@@ -34,6 +29,5 @@ import java.lang.annotation.*;
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
 })
-public @interface DocumentedApiListResponse {
+public @interface DocumentedDetailResponse {
 }
-

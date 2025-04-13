@@ -1,4 +1,4 @@
-package com.conexa.starwars.dto.register;
+package com.conexa.starwars.dto.auth;
 
 import lombok.*;
 
@@ -14,9 +14,6 @@ public class RegisterRequest {
 
     @NotBlank
     private String email;
-
-    @NotBlank
-    private String username;
 
     @NotBlank
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")

@@ -1,4 +1,4 @@
-package com.conexa.starwars.external.people;
+package com.conexa.starwars.external;
 
 import com.conexa.starwars.dto.people.PeopleResult;
 import com.conexa.starwars.dto.people.PeopleSearchResponse;

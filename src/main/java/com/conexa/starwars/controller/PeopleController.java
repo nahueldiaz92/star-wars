@@ -1,8 +1,8 @@
 package com.conexa.starwars.controller;
 
-import com.conexa.starwars.annotations.DocumentedListResponse;
-import com.conexa.starwars.annotations.DocumentedDetailResponse;
-import com.conexa.starwars.annotations.DocumentedPaginatedResultResponse;
+import com.conexa.starwars.annotations.api.DocumentedListResponse;
+import com.conexa.starwars.annotations.api.DocumentedDetailResponse;
+import com.conexa.starwars.annotations.api.DocumentedPaginatedResultResponse;
 import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.PaginatedResult;
 import com.conexa.starwars.dto.people.*;

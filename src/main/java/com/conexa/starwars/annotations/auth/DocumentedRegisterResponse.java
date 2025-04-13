@@ -1,6 +1,5 @@
-package com.conexa.starwars.annotations;
+package com.conexa.starwars.annotations.auth;
 
-import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -15,17 +14,16 @@ import java.lang.annotation.*;
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Recursos encontrados",
-                content = @Content(schema = @Schema(implementation = ApiListResponse.class))
+                description = "Exito"
         ),
         @ApiResponse(
                 responseCode = "400",
-                description = "Parametros incorrectos",
+                description = "Formato no valido",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         ),
         @ApiResponse(
-                responseCode = "404",
-                description = "Pagina no encontrada",
+                responseCode = "409",
+                description = "El email ya se encuentra en uso",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         ),
         @ApiResponse(
@@ -34,6 +32,5 @@ import java.lang.annotation.*;
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
 })
-public @interface DocumentedListResponse {
+public @interface DocumentedRegisterResponse {
 }
-

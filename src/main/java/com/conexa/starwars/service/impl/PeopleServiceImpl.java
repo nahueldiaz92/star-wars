@@ -4,7 +4,7 @@ import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.PaginatedResult;
 import com.conexa.starwars.dto.people.*;
 import com.conexa.starwars.exception.ApiException;
-import com.conexa.starwars.external.people.PeopleApiClient;
+import com.conexa.starwars.external.PeopleApiClient;
 import com.conexa.starwars.service.PeopleService;
 import com.conexa.starwars.util.Constants;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

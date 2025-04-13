@@ -7,4 +7,6 @@ public class PeopleResult {
 
     private PeopleDetail properties;
     private String uid;
+    private String _id;
+    private String description;
 }

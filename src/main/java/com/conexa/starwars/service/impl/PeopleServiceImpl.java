@@ -30,16 +30,20 @@ public class PeopleServiceImpl implements PeopleService {
     private final PeopleApiClient peopleApiClient;
 
     @Override
-    @Cacheable(value = Constants.LIST_PEOPLE_CACHE, key = "#page")
-    public ApiListResponse<People> getAllPeople(Integer page) {
+    @Cacheable(value = Constants.LIST_PEOPLE_CACHE, key = "{#page, #pageSize}")
+    public ApiListResponse<People> getAllPeople(Integer page, Integer pageSize) {
 
         if (page < 1) {
             throw new ApiException("La pagina debe ser mayor a 0", HttpStatus.BAD_REQUEST);
         }
 
+        if (pageSize < 1) {
+            throw new ApiException("El numero de items por pagina debe ser mayor a 0", HttpStatus.BAD_REQUEST);
+        }
+
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(Constants.API_BASE_URL + "/people/")
                 .queryParam("page", page)
-                .queryParam("limit", Constants.DEFAULT_PAGE_SIZE);
+                .queryParam("limit", pageSize);
 
         String url = uriBuilder.toUriString();
 
@@ -106,28 +110,32 @@ public class PeopleServiceImpl implements PeopleService {
 
 
     @Override
-    public PaginatedResult<PeopleResult> searchPeopleByName(String name, Integer page) {
+    public PaginatedResult<PeopleResult> searchPeopleByName(String name, Integer page, Integer pageSize) {
         int adjustedPage = page - 1;
+
         if (adjustedPage < 0) {
             throw new ApiException("La pagina debe ser mayor a 0", HttpStatus.BAD_REQUEST);
+        }
+        if (pageSize < 1) {
+            throw new ApiException("El numero de items por pagina debe ser mayor a 0", HttpStatus.BAD_REQUEST);
         }
 
         try {
             List<PeopleResult> allResults = peopleApiClient.fetchAllPeopleByName(name);
 
             List<PeopleResult> paginatedResults = allResults.stream()
-                    .skip((long) adjustedPage * Constants.DEFAULT_SEARCH_PAGE_SIZE)
-                    .limit(Constants.DEFAULT_SEARCH_PAGE_SIZE)
+                    .skip((long) adjustedPage * pageSize)
+                    .limit(pageSize)
                     .collect(Collectors.toList());
 
-            if (page > Math.ceil(allResults.size()) / Constants.DEFAULT_SEARCH_PAGE_SIZE) {
+            if (page > Math.ceil((double) allResults.size() / pageSize)) {
                 throw new ApiException("Pagina no encontrada", HttpStatus.NOT_FOUND);
             }
 
             return new PaginatedResult<>(
                     paginatedResults,
                     page,
-                    Constants.DEFAULT_SEARCH_PAGE_SIZE,
+                    pageSize,
                     allResults.size()
             );
         } catch (HttpClientErrorException ex) {

@@ -7,6 +7,7 @@ import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.PaginatedResult;
 import com.conexa.starwars.dto.people.*;
 import com.conexa.starwars.service.PeopleService;
+import com.conexa.starwars.util.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,8 +30,10 @@ public class PeopleController {
     @ResponseBody
     public ResponseEntity<ApiListResponse<People>> getAllPeople(
             @Parameter(description = "Numero de pagina", example = "1")
-            @RequestParam(defaultValue = "1") int page) {
-        return ResponseEntity.ok(peopleService.getAllPeople(page));
+            @RequestParam(defaultValue = "1") int page,
+            @Parameter(description = "Numero de items por pagina", example = "3")
+            @RequestParam(defaultValue = "10") int pageSize) {
+        return ResponseEntity.ok(peopleService.getAllPeople(page, pageSize));
     }
 
     @Operation(summary = "Obtener detalles de un personaje por ID")
@@ -48,10 +51,12 @@ public class PeopleController {
     @ResponseBody
     public ResponseEntity<PaginatedResult<PeopleResult>> searchPeopleByName(
             @Parameter(description = "Nombre para filtrar", example = "Luke")
-            @RequestParam(required = false) String name,
+            @RequestParam String name,
             @Parameter(description = "Numero de pagina", example = "1")
-            @RequestParam(defaultValue = "1") int page) {
-        return ResponseEntity.ok(peopleService.searchPeopleByName(name, page));
+            @RequestParam(defaultValue = "1") int page,
+            @Parameter(description = "Numero de items por pagina", example = "3")
+            @RequestParam(defaultValue = "3") int pageSize) {
+        return ResponseEntity.ok(peopleService.searchPeopleByName(name, page, pageSize));
     }
 
     //Endpoints para las vistas
@@ -61,7 +66,7 @@ public class PeopleController {
             @RequestParam(defaultValue = "1") int page,
             Model model) {
 
-        ApiListResponse<People> response = peopleService.getAllPeople(page);
+        ApiListResponse<People> response = peopleService.getAllPeople(page, Constants.DEFAULT_PAGE_SIZE);
 
         model.addAttribute("peopleList", response.getResults());
         model.addAttribute("currentPage", page);
@@ -84,7 +89,7 @@ public class PeopleController {
     public String searchPeopleView(Model model, @RequestParam(required = false) String name,
                                    @RequestParam(defaultValue = "1") int page) {
         if (name != null && !name.isEmpty()) {
-            PaginatedResult<PeopleResult> paginatedResult = peopleService.searchPeopleByName(name, page);
+            PaginatedResult<PeopleResult> paginatedResult = peopleService.searchPeopleByName(name, page, Constants.DEFAULT_SEARCH_PAGE_SIZE);
             model.addAttribute("results", paginatedResult.getItems());
             model.addAttribute("currentPage", paginatedResult.getCurrentPage());
             model.addAttribute("totalPages", paginatedResult.getTotalPages());

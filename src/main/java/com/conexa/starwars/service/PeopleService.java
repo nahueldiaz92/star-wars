@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PeopleService {
 
-    public ApiListResponse<People> getAllPeople(Integer page);
+    public ApiListResponse<People> getAllPeople(Integer page , Integer pageSize);
     public PeopleDetail getPeopleById(String id);
-    public PaginatedResult<PeopleResult> searchPeopleByName(String name, Integer page);
+    public PaginatedResult<PeopleResult> searchPeopleByName(String name, Integer page, Integer pageSize);
 }

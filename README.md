@@ -80,7 +80,7 @@ La autenticación está gestionada con **Spring Security**, utilizando formulari
 
 Documentación interactiva disponible en:
 ```
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/index.html
 ```
 
 ---
@@ -89,8 +89,7 @@ http://localhost:8080/swagger-ui.html
 
 Además de los endpoints REST, la aplicación cuenta con vistas accesibles desde el navegador:
 
-- Página de login: `http://localhost:8080/auth/login`
-- Página principal luego del login: `http://localhost:8080/home` (o según configuración)
+http://localhost:8080
 
 Estas vistas usan formularios HTML y sesiones para el manejo de autenticación.
 

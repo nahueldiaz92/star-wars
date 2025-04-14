@@ -42,6 +42,12 @@ public class AuthController {
         authService.registerUser(request);
         return ResponseEntity.ok().body("User registered successfully");
     }
+    @Operation(summary = "Realiza el logout de un usuario")
+    @PostMapping("/api/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        return ResponseEntity.ok().body("Logout exitoso");
+    }
 
     //Endpoints para las vistas
 

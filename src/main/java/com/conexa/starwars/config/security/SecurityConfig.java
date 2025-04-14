@@ -46,6 +46,12 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .defaultAuthenticationEntryPointFor(
                                 restAuthenticationEntryPoint, new AntPathRequestMatcher("/auth/api/**")
+                        )
+                        .defaultAuthenticationEntryPointFor(
+                                restAuthenticationEntryPoint, new AntPathRequestMatcher("/swagger-ui/**")
+                        )
+                        .defaultAuthenticationEntryPointFor(
+                                restAuthenticationEntryPoint, new AntPathRequestMatcher("/api-docs/**")
                         ));
 
         return http.build();

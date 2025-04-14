@@ -89,7 +89,7 @@ http://localhost:8080/swagger-ui/index.html
 
 Además de los endpoints REST, la aplicación cuenta con vistas accesibles desde el navegador:
 
-http://localhost:8080
+`http://localhost:8080`
 
 Estas vistas usan formularios HTML y sesiones para el manejo de autenticación.
 

@@ -28,6 +28,7 @@ public class PeopleServiceImpl implements PeopleService {
     private final RestTemplate restTemplate;
     private final PeopleApiClient peopleApiClient;
 
+
     @Override
     @Cacheable(value = Constants.LIST_PEOPLE_CACHE, key = "{#page, #pageSize}")
     public ApiListResponse<People> getAllPeople(Integer page, Integer pageSize) {
@@ -120,7 +121,7 @@ public class PeopleServiceImpl implements PeopleService {
         }
 
         try {
-            List<PeopleResult> allResults = peopleApiClient.fetchAllPeopleByName(name);
+            List<PeopleResult> allResults = peopleApiClient.fetchAllPeopleByName(name.toLowerCase());
 
             List<PeopleResult> paginatedResults = allResults.stream()
                     .skip((long) adjustedPage * pageSize)

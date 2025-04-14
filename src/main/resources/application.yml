@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/starwars
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  cache:
+    type: caffeine
+    cache-names: peopleList, peopleDetail, peopleSearch
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=30m
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  version: 1.0.0
+  title: Star Wars API Documentation
+  description: API para consultar informacion de personajes de Star Wars
+
+
+

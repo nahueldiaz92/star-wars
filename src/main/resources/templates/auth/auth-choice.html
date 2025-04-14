@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Bienvenido</h2>
+    <p>¿Qué deseas hacer?</p>
+    <a th:href="@{/auth/login}">Iniciar Sesión</a>
+    <a th:href="@{/auth/register}">Registrarse</a>
+</div>
+</body>
+</html>

@@ -2,7 +2,6 @@ package com.conexa.starwars.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentMatchers.*;
 
 import com.conexa.starwars.dto.ApiListResponse;
 import com.conexa.starwars.dto.PaginatedResult;
@@ -184,10 +183,8 @@ public class PeopleServiceImplTest {
 
         when(peopleApiClient.fetchAllPeopleByName("luke")).thenReturn(mockResults);
 
-        // Act - pedimos página 1 con tamaño 2
         PaginatedResult<PeopleResult> result = peopleService.searchPeopleByName("Luke", 1, 2);
 
-        // Assert
         assertNotNull(result);
         assertEquals(2, result.getItems().size()); // Debería devolver 2 items (pageSize = 2)
         assertEquals(1, result.getCurrentPage());

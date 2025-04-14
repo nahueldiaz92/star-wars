@@ -1,20 +1,16 @@
 FROM maven:3.9.6-eclipse-temurin-8 AS build
 WORKDIR /app
 
-# Copia solo lo necesario
 COPY pom.xml .
 COPY src src
 COPY .mvn .mvn
 COPY mvnw .
 
-# Construye el proyecto
 RUN ./mvnw clean package -DskipTests
 
-# --- Fase final ---
 FROM eclipse-temurin:8-jre
 WORKDIR /app
 
-# Copia el JAR con el nombre EXACTO que ves en tu directorio
 COPY --from=build /app/target/starwars-api-1.0-SNAPSHOT.jar app.jar
 
 EXPOSE 8080

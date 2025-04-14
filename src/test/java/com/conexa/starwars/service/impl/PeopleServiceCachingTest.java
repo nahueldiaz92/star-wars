@@ -45,19 +45,17 @@ class PeopleServiceCachingTest {
 
     @AfterEach
     void tearDown() {
-        // Limpia todos los caches después de cada test
         cacheManager.getCacheNames()
                 .forEach(cacheName -> {
                     Cache cache = cacheManager.getCache(cacheName);
                     if (cache != null) {
-                        cache.clear(); // Elimina todos los entries del cache
+                        cache.clear();
                     }
                 });
     }
 
     @Test
     void getAllPeople_CachesResult() {
-        // 1. Respuesta mock de la API
         String mockApiListResponse = "{" +
                 "\"message\": \"ok\"," +
                 "\"total_pages\": 2," +
@@ -66,35 +64,28 @@ class PeopleServiceCachingTest {
                 "]" +
                 "}";
 
-        // 2. Configura el mock para la primera llamada HTTP
         mockServer.expect(requestTo("https://www.swapi.tech/api/people/?page=1&limit=10"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockApiListResponse, MediaType.APPLICATION_JSON));
 
-        // 3. Primera llamada: llena el caché
         ApiListResponse<People> firstCall = peopleService.getAllPeople(1, 10);
         assertEquals(1, firstCall.getResults().size());
         assertEquals("Luke Skywalker", firstCall.getResults().get(0).getName());
 
-        // 4. Verifica que se haya hecho solo una llamada
         mockServer.verify();
 
-        // 5. Segunda llamada con los mismos parámetros: debe usar el caché
         ApiListResponse<People> secondCall = peopleService.getAllPeople(1, 10);
         assertEquals("Luke Skywalker", secondCall.getResults().get(0).getName());
 
-        // 6. Verifica que el valor esté en caché (clave compuesta como array de argumentos)
         Cache cache = cacheManager.getCache(Constants.LIST_PEOPLE_CACHE);
 
         assertNotNull(cache);
         assertNotNull(cache.get(Arrays.asList(1, 10)));
-        // 7. Verifica que no haya habido una segunda llamada HTTP
-        mockServer.verify(); // Si se hizo otra llamada, falla aquí
+        mockServer.verify();
     }
 
     @Test
     void getPeopleById_CachesResult() {
-        // 1. Configura el mock para la primera llamada HTTP
         String mockApiResponse = "{" +
                 "\"message\": \"ok\"," +
                 "\"result\": {" +
@@ -108,22 +99,17 @@ class PeopleServiceCachingTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockApiResponse, MediaType.APPLICATION_JSON));
 
-        // 2. Primera llamada (debe llamar a la API y llenar el caché)
         PeopleDetail firstCall = peopleService.getPeopleById("1");
         assertEquals("Luke Skywalker", firstCall.getName());
 
-        // 3. Verifica que se hizo la llamada HTTP
         mockServer.verify();
 
-        // 4. Segunda llamada (debe usar el caché, sin llamar a la API)
         PeopleDetail secondCall = peopleService.getPeopleById("1");
         assertEquals("Luke Skywalker", secondCall.getName());
 
-        // 5. Verifica que el caché se usó
         Cache cache = cacheManager.getCache("peopleDetail");
         assertNotNull(cache.get("1"));
 
-        // 6. Opcional: Verifica que NO hubo más llamadas HTTP
-        mockServer.verify(); // Si hubiera una segunda llamada HTTP, fallaría aquí
+        mockServer.verify();
     }
 }

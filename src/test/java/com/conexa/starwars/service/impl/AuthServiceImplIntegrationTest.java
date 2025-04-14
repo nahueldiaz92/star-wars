@@ -52,15 +52,12 @@ import static org.mockito.Mockito.verify;
 
         @Test
         void registerUser_WithValidData_ShouldCreateUser() {
-            // Arrange
             RegisterRequest request = new RegisterRequest();
             request.setEmail("newuser@conexa.com");
             request.setPassword("password123");
 
-            // Act
             authService.registerUser(request);
 
-            // Assert
             User createdUser = userRepository.findByEmail("newuser@conexa.com")
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -72,7 +69,6 @@ import static org.mockito.Mockito.verify;
 
         @Test
         void registerUser_WithDuplicateEmail_ShouldThrowException() {
-            // Arrange
             User existingUser = new User();
             existingUser.setEmail("existinguser@conexa.com");
             existingUser.setPassword(passwordEncoder.encode("password123"));
@@ -85,7 +81,6 @@ import static org.mockito.Mockito.verify;
             request.setEmail("existinguser@conexa.com");
             request.setPassword("password123");
 
-            // Act & Assert
             UserRegistrationException exception = assertThrows(UserRegistrationException.class,
                     () -> authService.registerUser(request));
 
@@ -95,12 +90,10 @@ import static org.mockito.Mockito.verify;
 
         @Test
         void registerUser_WithInvalidEmailFormat_ShouldThrowException() {
-            // Arrange
             RegisterRequest request = new RegisterRequest();
             request.setEmail("invalid-email");
             request.setPassword("password123");
 
-            // Act & Assert
             UserRegistrationException exception = assertThrows(UserRegistrationException.class,
                     () -> authService.registerUser(request));
 
@@ -110,12 +103,10 @@ import static org.mockito.Mockito.verify;
 
         @Test
         void registerUser_WithShortPassword_ShouldThrowException() {
-            // Arrange
             RegisterRequest request = new RegisterRequest();
             request.setEmail("shortpassword@conexa.com");
             request.setPassword("123");
 
-            // Act & Assert
             UserRegistrationException exception = assertThrows(UserRegistrationException.class,
                     () -> authService.registerUser(request));
 
@@ -125,7 +116,6 @@ import static org.mockito.Mockito.verify;
 
         @Test
         void login_WithValidCredentials_ShouldAuthenticate() {
-            // Arrange
             User user = new User();
             user.setEmail("test@conexa.com");
             user.setPassword(passwordEncoder.encode("password123"));
@@ -140,23 +130,19 @@ import static org.mockito.Mockito.verify;
             HttpSession session = mock(HttpSession.class);
             when(request.getSession(true)).thenReturn(session);
 
-            // Act
             authService.login(loginRequest, request);
 
-            // Assert
             verify(session).setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
         }
 
         @Test
         void login_WithInvalidCredentials_ShouldThrowAuthException() {
-            // Arrange: no creamos ningún usuario con ese email
             LoginRequest loginRequest = new LoginRequest();
             loginRequest.setEmail("nonexistentuser@conexa.com");
             loginRequest.setPassword("wrongpassword");
 
             HttpServletRequest request = mock(HttpServletRequest.class);
 
-            // Act & Assert
             AuthException exception = assertThrows(AuthException.class,
                     () -> authService.login(loginRequest, request));
 

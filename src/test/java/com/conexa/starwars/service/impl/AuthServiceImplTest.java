@@ -64,12 +64,10 @@ class AuthServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        // Para RegisterRequest
         validRegisterRequest = new RegisterRequest();
         validRegisterRequest.setEmail("test@example.com");
         validRegisterRequest.setPassword("password123");
 
-        // Para LoginRequest
         validLoginRequest = new LoginRequest();
         validLoginRequest.setEmail("test@example.com");
         validLoginRequest.setPassword("password123");
@@ -82,26 +80,21 @@ class AuthServiceImplTest {
 
     @Test
     void registerUser_WithValidData_ShouldSaveUser() {
-        // Arrange
         when(roleRepository.findByName("USER")).thenReturn(Optional.of(new Role()));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        // Act
         authService.registerUser(validRegisterRequest);
 
-        // Assert
         verify(userRepository, times(1)).save(any(User.class));
         verify(passwordEncoder, times(1)).encode(anyString());
     }
 
     @Test
     void registerUser_WithInvalidEmail_ShouldThrowException() {
-        // Arrange
         RegisterRequest request = new RegisterRequest();
         request.setEmail("invalid-email"); // Email inválido
         request.setPassword("password123");
 
-        // Act & Assert
         UserRegistrationException exception = assertThrows(UserRegistrationException.class,
                 () -> authService.registerUser(request));
 
@@ -111,10 +104,8 @@ class AuthServiceImplTest {
 
     @Test
     void registerUser_WithExistingEmail_ShouldThrowException() {
-        // Arrange
         when(userRepository.existsByEmail(validRegisterRequest.getEmail())).thenReturn(true);
 
-        // Act & Assert
         UserRegistrationException exception = assertThrows(UserRegistrationException.class,
                 () -> authService.registerUser(validRegisterRequest));
 
@@ -125,8 +116,8 @@ class AuthServiceImplTest {
     @Test
     void registerUser_WithShortPassword_ShouldThrowException() {
         RegisterRequest request = new RegisterRequest();
-        request.setEmail("user@example.com"); // Email válido
-        request.setPassword("123"); // Contraseña corta
+        request.setEmail("user@example.com");
+        request.setPassword("123");
 
         UserRegistrationException exception = assertThrows(UserRegistrationException.class,
                 () -> authService.registerUser(request));
@@ -149,24 +140,18 @@ class AuthServiceImplTest {
 
     @Test
     void login_WithValidCredentials_ShouldAuthenticate() {
-        // Arrange
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
 
-        // Set the mocked security context manually
         SecurityContextHolder.setContext(securityContext);
 
-        // Mock authentication flow
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
 
-        // Mock HTTP session
         when(request.getSession(true)).thenReturn(session);
 
-        // Act
         authService.login(validLoginRequest, request);
 
-        // Assert
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(securityContext).setAuthentication(authentication);
         verify(session).setAttribute(
@@ -177,11 +162,9 @@ class AuthServiceImplTest {
 
     @Test
     void login_WithInvalidCredentials_ShouldThrowAuthException() {
-        // Arrange
         when(authenticationManager.authenticate(any()))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));
 
-        // Act & Assert
         AuthException exception = assertThrows(AuthException.class,
                 () -> authService.login(validLoginRequest, request));
 

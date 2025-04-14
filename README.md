@@ -28,8 +28,8 @@ API que proporciona información sobre personajes del universo Star Wars.
 ### ✅ Opción 1: Usando Docker (recomendado)
 
 #### Requisitos
-- Docker
-- Docker Compose
+- Tener [Docker](https://www.docker.com/products/docker-desktop/) y [Docker Compose](https://docs.docker.com/compose/install/) instalados y configurados.
+- Asegurarse de que **Docker Desktop esté en ejecución** antes de correr los comandos.
 
 #### Comando
 ```bash
